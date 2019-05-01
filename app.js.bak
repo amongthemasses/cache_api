@@ -1,0 +1,15 @@
+const express = require('express');
+const cors = require('cors');
+const userRouter = require('./routes/user.js');
+const worksListRouter = require('./routes/WorksList.js');
+const kindRouter = require('./routes/kind.js');
+var server = express();
+server.use(cors({
+  origin:['http://localhost:8080','http://192.168.8.10:8080','http://127.0.0.1:8080'],
+  credentials:true
+}))
+server.listen(3000);
+server.use( express.static('public') )
+server.use('/user',userRouter)
+server.use('/worksList',worksListRouter)
+server.use('/kind',kindRouter)
