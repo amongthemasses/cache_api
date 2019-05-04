@@ -1,6 +1,7 @@
 const express = require('express');
 const pool = require('../pool.js')
 var router = express.Router();
+
 router.get('/',(req,res)=>{
 	var pno = req.query.pno;
 	var pageSize = req.query.pageSize;
@@ -31,5 +32,17 @@ router.get('/',(req,res)=>{
 			}
 		}
 	})
+})
+//作品详情
+router.get('/details',(req,res)=>{
+	var lid = req.query.lid;
+	var sql = 'SELECT * FROM dy_works WHERE lid=?';
+	pool.query(sql,[lid],(err,result)=>{
+		if(err) throw err;
+		if(result.length>0){
+			res.send({code:1,data:result});
+		}
+	})
+
 })
 module.exports=router;
