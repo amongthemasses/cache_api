@@ -37,18 +37,13 @@ wsServer.on("connection",(socket)=>{
 
     //服务器接收客户端数据
     socket.on("message",(msg)=>{
+    	//webscoket只能接受字符串
         console.log("服务器接收到消息:-"+msg);
-        //返回接受的数据
-        var json = JSON.stringify({ type:'message', data: msg })
+        var arr = msg.split(",")
+        console.log(arr);
+        //返回接受的数据,将数据转换为
+        var json = JSON.stringify({ msg:arr[0], user_name:arr[1], user_img:arr[2] })
         socket.send(json)
-        // var sql = 'select * from dy_user';
-        // pool.query(sql,(err,result)=>{
-        //     if(err) throw err;
-        //     if(result.length>0){
-        //         console.log(JSON.parse(result));
-        //     }
-        // })
-
     });
     socket.on("close",()=>{
         console.log("客户端断开连接...");
