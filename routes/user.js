@@ -46,6 +46,10 @@ router.get('/details',(req,res)=>{
             sum += 50;
             obj.data = result;
             if (sum == 150) res.send(obj);
+        }else{
+            sum += 50;
+            obj.data = [];
+            if (sum == 150) res.send(obj);
         }
     })
     //获得用户所有的总赞数
@@ -53,6 +57,11 @@ router.get('/details',(req,res)=>{
     pool.query(sql2, [uid], (err, result) => {
         if (err) throw err;
         if (result.length > 0) {
+            if(!result[0].s) result[0].s=0;
+            sum += 50;
+            obj.count = result[0].s;
+            if (sum == 150) res.send(obj);
+        }else{
             sum += 50;
             obj.count = result[0].s;
             if (sum == 150) res.send(obj);
