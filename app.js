@@ -34,7 +34,6 @@ server.use('/kind',kindRouter)
 var wsServer = new ws.Server({port:3001});
 wsServer.on("connection",(socket)=>{
     console.log("ws:-服务器接收连接");
-
     //服务器接收客户端数据
     socket.on("message",(msg)=>{
     	//webscoket只能接受字符串

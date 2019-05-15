@@ -2,6 +2,13 @@ const express = require('express');
 const pool = require('../pool.js')
 var router = express.Router();
 //获取kind动态数据
+/**
+	*1.获得类页面轮播图
+	*2.获得推荐内容
+	*3.获得分类内容列表
+	*@param 请求数据
+	*@param 响应数据
+ */
 router.get('/',(req,res)=>{
 	var kid = req.query.kid;
 	var move = 0;

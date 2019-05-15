@@ -1,7 +1,7 @@
 const express = require('express');
 const pool = require('../pool.js')
 var router = express.Router();
-
+//作品列表接口
 router.get('/',(req,res)=>{
 	var pno = req.query.pno;
 	var pageSize = req.query.pageSize;
@@ -36,13 +36,26 @@ router.get('/',(req,res)=>{
 //作品详情
 router.get('/details',(req,res)=>{
 	var lid = req.query.lid;
-	var sql = 'SELECT * FROM dy_works WHERE lid=?';
+	var sql = 'SELECT * FROM dy_works_list WHERE lid=?';
 	pool.query(sql,[lid],(err,result)=>{
 		if(err) throw err;
 		if(result.length>0){
 			res.send({code:1,data:result});
 		}
 	})
-
 })
+//更新like_num
+router.get('/like',(req,res)=>{
+	var lid = req.query.lid;
+	var like_num = req.query.like_num;
+	var sql = 'UPDATE dy_works_list SET like_num=? WHERE lid=?';
+	pool.query(sql,[like_num,lid],(err,result)=>{
+		if(err) throw err;
+		if(result.affectedRows>0){
+			res.send({code:1,msg:'suc'});
+		}else{
+			res.send({code:-1,msg:'err'});
+		};
+	});
+});
 module.exports=router;

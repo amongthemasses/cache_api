@@ -26,7 +26,7 @@ router.get('/login',(req,res)=>{
 			res.send({code:-1,msg:"用户名或密码不正确"});
 		}else{
 			req.session.uid = result[0].uid;
-            res.send({code:1,data:result});
+            res.send({code:1,msg:'登录成功',data:result});
 		};
 	});
 })
@@ -102,10 +102,10 @@ router.get('/search',(req,res)=>{
     var kw=req.query.kw;
     //判断用户是否登录
     var uid = req.session.uid;
-	if(!uid){
-		res.send({code:-2,msg:'请先登录'})
-		return;
-	};
+  	if(!uid){
+  		res.send({code:-2,msg:'请先登录'})
+  		return;
+  	};
     if(parseInt(kw.length)==11){  //是否为手机号
         //是按照手机号码查找
         var sql=`select * from dy_user where phone=?`;
@@ -130,6 +130,47 @@ router.get('/search',(req,res)=>{
         })
     };
 })
+//添加好友,
+router.get('/add',(req,res)=>{
+  var uid = req.session.uid;    //获得登录后用户的id
+  var user_id = req.query.user_id;    //要添加的用户id
+  var fname,fpic,signature;
+  if(!uid){
+    res.send({code:-2,msg:'请先登录'})
+    return;
+  };
+  //查询数据库获得用户信息，赋值给对应变量
+  var sql1 = 'SELECT user_name,user_img,signature FROM dy_user WHERE uid=?';
+  pool.query(sql1,[user_id],(err,result)=>{
+    if(err) throw err;
+    if(result.length>0){
+      fname = result[0].user_name;
+      fpic = result[0].user_img;
+      signature = result[0].signature;
+      //检索好友列表--若已添加好友，则返回该用户已添加
+      var sql2 = 'SELECT fid FROM dy_friend WHERE uid=? AND user_id=?';
+      pool.query(sql2,[uid,user_id],(err,result)=>{
+        if(err) throw err;
+        if(result.length>0){
+          res.send({code:-3,msg:'该用户已是您的好友'})
+        }else{
+          //插入friend;
+          var sql3 = 'INSERT INTO `dy_friend`(`fid`, `uid`, `user_id`, `fname`, `fpic`, `signature`) VALUES (null,?,?,?,?,?)'
+          pool.query(sql3,[uid,user_id,fname,fpic,signature],(err,result)=>{
+            if(err) throw err;
+            if(result.affectedRows>0){
+              res.send({code:1,msg:'添加成功'});
+            }else{
+              res.send({code:-1,msg:'添加失败'});
+            }
+          })
+        }
+      })
+    }
+  })
+})
+
+//退出登录接口
 router.get('/logout',(req,res)=>{
     req.session.destroy(function (err) {
         if (err) {
