@@ -1,5 +1,7 @@
 const express = require('express');
 const pool = require('../pool.js');
+const multer = require('multer');
+const fs = require('fs');
 var router = express.Router();
 const session = require('express-session');
 var user_key = 'keys';
@@ -168,6 +170,76 @@ router.get('/add',(req,res)=>{
       })
     }
   })
+})
+//上传接口
+var upload = multer({
+    dest: 'upload/'
+})
+router.post('/uploadFile', upload.single('myvideo'),(req,res)=>{
+    var uid = req.session.uid;      //1用户id
+    if (!uid) {
+        res.send({ code: -2, msg: '请先登录' })
+        return;
+    };
+    var user_name,user_pic;  //2,3用户名
+    var src;        //4作品地址
+    var title = req.body.title;     //5作品标题
+    if(!title) title = '暂无标题'
+    var like_num = req.body.like_num;       //6点赞数    初始为 0 
+    if(!like_num) like_num = 0;
+    var kind = req.body.kind;       //7类名
+    if (!kind) kind = '文化';
+    var kid;    //8类id
+    if (kind == '美食') kid = 1;
+    if (kind == '景点') kid = 2; 
+    if (kind == '文化') kid = 3; 
+    if (kind == '玩乐') kid = 4; 
+    if (kind == '酒店') kid = 5; 
+    if (kind == '购物') kid = 6;
+    //限制文件大小
+    var fileSize = req.file.size/1024/1024;
+    if (fileSize>50){
+        res.send({code:-1,msg:'您的文件过大'});
+        return;
+    }
+    //限制文件类型
+    var type = req.file.mimetype;
+    if(type.indexOf('video')==-1){
+        res.send({ code: -1, msg: '您的文件类型不相符' });
+        return;
+    }
+    var src = req.file.originalname;
+    //重新命名 -时间+随机数+后缀
+    var time = new Date().getTime();
+    var radom = Math.floor(Math.random() * 999);
+    var suff = src.substring(src.lastIndexOf('.'));
+    var indexEnd = __dirname.lastIndexOf('r')-1;
+    var des = __dirname.slice(0,indexEnd)+'/public/video/' + time + radom + suff;
+    src = 'video/' + time + radom + suff;  //文件地址
+    var sql1 = 'SELECT user_name,user_img FROM dy_user WHERE uid=?'
+    pool.query(sql1,[uid],(err,result)=>{
+        if(err) throw err;
+        if(result.length>0){
+            //把获得的用户信息赋该变量
+            user_name = result[0].user_name;
+            user_pic = result[0].user_img;
+            console.log(user_pic)
+            //插入入作品
+            var sql2 = 'INSERT INTO `dy_works_list`(`lid`, `uid`, `src`, `title`, `user_pic`, `user_name`, `like_num`, `kind`, `kid`) VALUES (null,?,?,?,?,?,?,?,?)';
+            pool.query(sql2, [uid, src, title, user_pic, user_name, like_num, kind, kid],(err,result)=>{
+                if(err) throw err;
+                if(result.affectedRows>0){
+                    fs.renameSync(req.file.path, des);
+                    res.send({ code: 1, msg: '上传成功' });
+                }else{
+                    res.send({ code: -1, msg: '上传失败' });
+                }
+            })
+
+        }
+    })
+    //从临时存放目录诺入指定目录
+    
 })
 
 //退出登录接口
