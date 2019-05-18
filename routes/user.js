@@ -185,16 +185,16 @@ router.post('/uploadFile', upload.single('myvideo'),(req,res)=>{
     var src;        //4作品地址
     var title = req.body.title;     //5作品标题
     if(!title) title = '暂无标题'
-    var like_num = req.body.like_num;       //6点赞数    初始为 0 
+    var like_num = req.body.like_num;       //6点赞数    初始为 0
     if(!like_num) like_num = 0;
     var kind = req.body.kind;       //7类名
     if (!kind) kind = '文化';
     var kid;    //8类id
     if (kind == '美食') kid = 1;
-    if (kind == '景点') kid = 2; 
-    if (kind == '文化') kid = 3; 
-    if (kind == '玩乐') kid = 4; 
-    if (kind == '酒店') kid = 5; 
+    if (kind == '景点') kid = 2;
+    if (kind == '文化') kid = 3;
+    if (kind == '玩乐') kid = 4;
+    if (kind == '酒店') kid = 5;
     if (kind == '购物') kid = 6;
     //限制文件大小
     var fileSize = req.file.size/1024/1024;
@@ -239,7 +239,7 @@ router.post('/uploadFile', upload.single('myvideo'),(req,res)=>{
         }
     })
     //从临时存放目录诺入指定目录
-    
+
 })
 
 //退出登录接口
