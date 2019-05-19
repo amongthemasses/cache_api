@@ -181,6 +181,10 @@ router.post('/uploadFile', upload.single('myvideo'),(req,res)=>{
         res.send({ code: -2, msg: '请先登录' })
         return;
     };
+	if(!req.file){
+		console.log('err')
+		return;
+	}
     var user_name,user_pic;  //2,3用户名
     var src;        //4作品地址
     var title = req.body.title;     //5作品标题
@@ -223,7 +227,6 @@ router.post('/uploadFile', upload.single('myvideo'),(req,res)=>{
             //把获得的用户信息赋该变量
             user_name = result[0].user_name;
             user_pic = result[0].user_img;
-            console.log(user_pic)
             //插入入作品
             var sql2 = 'INSERT INTO `dy_works_list`(`lid`, `uid`, `src`, `title`, `user_pic`, `user_name`, `like_num`, `kind`, `kid`) VALUES (null,?,?,?,?,?,?,?,?)';
             pool.query(sql2, [uid, src, title, user_pic, user_name, like_num, kind, kid],(err,result)=>{

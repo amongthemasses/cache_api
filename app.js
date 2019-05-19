@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const pool = require('./pool.js')
+// const pool = require('./pool.js')
 const cors = require('cors');   //引入cors
 const ws = require('ws');
 //路由引入
@@ -20,7 +20,7 @@ server.use(bodyParser.urlencoded({
 }))
 //配置cors
 server.use(cors({
-  origin:['http://localhost:8080','http://127.0.0.1:8080'],
+    origin: ['http://localhost:8080', 'http://127.0.0.1:8080','file:///D:/ApplicationWeb/demo/upload/public/uploadAxios.html'],
   credentials:true
 }))
 //托管静态资源

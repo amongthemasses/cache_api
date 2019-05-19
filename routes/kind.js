@@ -38,6 +38,10 @@ router.get('/',(req,res)=>{
 			move+=50;
 			obj.data=result;
 			if(move==150) res.send(obj);
+		}else{
+			move += 50;
+			obj.data = [];
+			if (move == 150) res.send(obj);
 		}
 	});
 })
