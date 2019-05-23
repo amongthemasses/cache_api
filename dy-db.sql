@@ -132,3 +132,12 @@ CREATE	TABLE dy_chat(
 	user_name VARCHAR(50),
 	user_img VARCHAR(200)
 )
+--##评论表
+CREATE TABLE dy_comment(
+	mid INT PRIMARY KEY AUTO_INCREMENT,
+	lid INT,
+	uid INT,
+	user_name VARCHAR(50),
+	user_img VARCHAR(200),
+	content VARCHAR(200)
+)
