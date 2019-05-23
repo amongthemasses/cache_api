@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-// const pool = require('./pool.js')
+const pool = require('./pool.js')
 const cors = require('cors');   //引入cors
 const ws = require('ws');
 //路由引入
@@ -38,14 +38,34 @@ wsServer.on("connection",(socket)=>{
     //服务器接收客户端数据
     socket.on("message",(msg)=>{
     	//webscoket只能接受字符串
-        console.log("服务器接收到消息:-"+msg);
         var arr = msg.split(",")
-        console.log(arr);
-        //返回接受的数据,将数据转换为
-        var json = JSON.stringify({ msg:arr[0], user_name:arr[1], user_img:arr[2] })
-        socket.send(json)
+        var uid = arr[0];
+        var msg = arr[1];
+        var user_name = arr[2];
+        var user_img = arr[3];
+        var sql1 = 'INSERT INTO `dy_chat`(`cid`, `uid`, `msg`, `user_name`, `user_img`) VALUES(NULL,?,?,?,?)';
+        pool.query(sql1,[uid,msg,user_name,user_img],(err,result)=>{
+            if(err) throw err;
+            if(result.affectedRows>0){
+                var sql2 = 'SELECT * FROM dy_chat';
+                pool.query(sql2,(err,result)=>{
+                    if(err) throw err;
+                    var json = JSON.stringify({code:1,data:result})
+                    socket.send(json)
+                })
+            }
+        })
+        // return
+        // //返回接受的数据,将数据转换为
+        // var json = JSON.stringify({ uid: arr[0], msg: arr[1], user_name: arr[2], user_img: arr[3] })
+        // socket.send(json)
     });
     socket.on("close",()=>{
-        console.log("客户端断开连接...");
+        var sql = 'DELETE FROM dy_chat'
+        pool.query(sql,(err,result)=>{
+            if(err) throw err;
+            console.log("客户端断开连接...");
+        })
+
     })
 });
