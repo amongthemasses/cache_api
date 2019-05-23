@@ -125,13 +125,13 @@ CREATE TABLE dy_friend(
 );
 
 --##聊天表
-CREATE	TABLE dy_chat(
+CREATE TABLE dy_chat(
 	cid INT PRIMARY KEY AUTO_INCREMENT,
 	uid INT,
 	msg VARCHAR(200),
 	user_name VARCHAR(50),
 	user_img VARCHAR(200)
-)
+);
 --##评论表
 CREATE TABLE dy_comment(
 	mid INT PRIMARY KEY AUTO_INCREMENT,
@@ -140,4 +140,4 @@ CREATE TABLE dy_comment(
 	user_name VARCHAR(50),
 	user_img VARCHAR(200),
 	content VARCHAR(200)
-)
+);

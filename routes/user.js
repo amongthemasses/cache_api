@@ -247,13 +247,41 @@ router.post('/uploadFile', upload.single('myvideo'), (req, res) => {
 //获取评论内容
 router.get('/comment',(req,res)=>{
     var lid = req.query.lid;
-    var sql = 'SELECT * FROM dy_comment WHERE lid = ?';
-    pool.query(sql,[kid],(err,result)=>{
+    var move = 0;
+    var obj = {code:1};
+    var sql1 = 'SELECT * FROM dy_comment WHERE lid = ?';
+    pool.query(sql1,[lid],(err,result)=>{
         if(err) throw err;
         if(result.length>0){
-            res.send({ code: 1, data: result});
+            move+=50;
+            obj.data = result;
+            if(move==100){
+                res.send(obj)
+            }
         }else{
-            res.send({ code: -1, data:[] });
+            move+=50;
+            obj.code=-1;
+            obj.data = [];
+            if(move==100){
+                res.send(obj)
+            }
+        }
+    })
+    var sql2 = 'SELECT COUNT(lid) count FROM dy_comment WHERE lid = ?';
+    pool.query(sql2,[lid],(err,result)=>{
+        if(err) throw err;
+        if(result.length>0){
+            move+=50;
+            obj.count = result[0].count;
+            if(move==100){
+                res.send(obj)
+            }
+        }else{
+            move+=50;
+            obj.count = 0;
+            if(move==100){
+                res.send(obj)
+            }
         }
     })
 })
@@ -265,20 +293,22 @@ router.get('/insetcmt',(req,res)=>{
         return;
     };
     var lid  = req.query.lid;    //必选
-    var conent = req.query.conent;   //必选
+    var content = req.query.content;   //必选
     var user_name,user_img;
     //获得不同用户详情---（用户名，用户图片）
     var sql1 = 'SELECT user_name,user_img FROM dy_user WHERE uid=?'
-    pool.query(sql1,(err,result)=>{
+    pool.query(sql1,[uid],(err,result)=>{
         if(err) throw err;
         if(result.length>0){
             user_name = result[0].user_name;
             user_img = result[0].user_img;
-            var sql2 = 'INSERT INTO FROM `dy_comment`(mid,`lid`,`uid`,`user_name`,`user_img`,`content`) VALUES(null,?,?,?,?,?)';
-            pool.query(sql2,[lid,uid,user_name,user_img,content](err,result)=>{
+            var sql2 = 'INSERT INTO `dy_comment`(`mid`,`lid`,`uid`,`user_name`,`user_img`,`content`) VALUES(null,?,?,?,?,?)';
+            pool.query(sql2,[lid,uid,user_name,user_img,content],(err,result)=>{
                 if(err) throw err;
                 if(result.affectedRows>0){
-                    console.log('insert suc');
+                    res.send({code:1, msg:'评论成功'})
+                }else{
+                    res.send({code:-1, msg:'评论失败'})
                 }
             })
         }
