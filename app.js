@@ -51,6 +51,7 @@ wsServer.on("connection",(socket)=>{
                 pool.query(sql2,(err,result)=>{
                     if(err) throw err;
                     var json = JSON.stringify({code:1,data:result})
+                    //返回给前端
                     socket.send(json)
                 })
             }
@@ -60,6 +61,7 @@ wsServer.on("connection",(socket)=>{
         // var json = JSON.stringify({ uid: arr[0], msg: arr[1], user_name: arr[2], user_img: arr[3] })
         // socket.send(json)
     });
+    //关闭ws服务器
     socket.on("close",()=>{
         var sql = 'DELETE FROM dy_chat'
         pool.query(sql,(err,result)=>{

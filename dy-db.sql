@@ -13,9 +13,12 @@ CREATE TABLE dy_user(
 	idcard VARCHAR(18),
 	signature VARCHAR(200)
 );
-INSERT INTO dy_user VALUE(NULL,'liubin',md5('123456'),'lb18740599813@126.com','15389415660','会游泳的鱼','imgs/userheader/01.png','612501199505150312','遨游在只是的海洋里结果--丢了');
-INSERT INTO dy_user VALUE(NULL,'Mswang',md5('123456'),'lb18740599813@126.com','15389415660','王先森','imgs/userheader/bg.png','612501199505150312','什么都是垃圾,只有唯有小鱼干');
-INSERT INTO dy_user VALUE(NULL,'tom',md5('123456'),'lb18740599813@126.com','15389415660','不吃鱼的猫','imgs/userheader/11.png','612501199505150312','我只喜欢吃狗粮');
+INSERT INTO dy_user VALUE(NULL,'liubin1',md5('123456'),'lb18740599813@126.com','12345678912','会游泳的鱼','imgs/userheader/01.png','612501199505150312','遨游在只是的海洋里结果--丢了');
+INSERT INTO dy_user VALUE(NULL,'liubin2',md5('123456'),'lb18740599813@126.com','15389415660','住店的猫','imgs/userheader/02.png','612501199505150312','什么都是垃圾,只有唯有小鱼干');
+INSERT INTO dy_user VALUE(NULL,'liubin3',md5('123456'),'lb18740599813@126.com','15389415660','爱玩的狗熊','imgs/userheader/03.png','612501199505150312','我只喜欢吃狗粮');
+INSERT INTO dy_user VALUE(NULL,'liubin4',md5('123456'),'lb18740599813@126.com','15389415660','痞子国宝','imgs/userheader/05.png','612501199505150312','我只喜欢吃狗粮');
+INSERT INTO dy_user VALUE(NULL,'liubin5',md5('123456'),'lb18740599813@126.com','15389415660','今天不开心','imgs/userheader/05.png','612501199505150312','我只喜欢吃狗粮');
+INSERT INTO dy_user VALUE(NULL,'liubin6',md5('123456'),'lb18740599813@126.com','15389415660','凑活凑乎','imgs/userheader/06.png','612501199505150312','我只喜欢吃狗粮');
 
 --##workslist表  //作品列表
  CREATE TABLE dy_works_list(
@@ -32,16 +35,6 @@ INSERT INTO dy_user VALUE(NULL,'tom',md5('123456'),'lb18740599813@126.com','1538
  -- 美食
 INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','已经脱坑单还是怀念','imgs/userheader/01.png','会游泳的鱼','15','美食',1);
 INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','闲来无事','imgs/userheader/01.png','会游泳的鱼','15','美食',1);
-INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','看看都来看看','imgs/userheader/01.png','会游泳的鱼','11','美食',1);
-INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','以钱赚钱啦！','imgs/userheader/01.png','会游泳的鱼','150','美食',1);
-INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','有钱的碰个钱场','imgs/userheader/01.png','会游泳的鱼','120','美食',1);
-INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','没钱的碰个人场','imgs/userheader/01.png','会游泳的鱼','119','美食',1);
-INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','有事没事吊吊吊','imgs/userheader/01.png','会游泳的鱼','118','美食',1);
-INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','大爷你确定你不玩了','imgs/userheader/01.png','会游泳的鱼','175','美食',1);
-INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','我去，这么好玩，我要充钱','imgs/userheader/01.png','会游泳的鱼','105','美食',1);
-INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','我是一只小奇遇','imgs/userheader/01.png','会游泳的鱼','175','美食',1);
-INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','大哥我要冲钱','imgs/userheader/01.png','会游泳的鱼','1035','美食',1);
-INSERT INTO dy_works_list VALUES(NULL,1,'video/01.mp4','别充钱，大哥带你玩','imgs/userheader/01.png','会游泳的鱼','1350','美食',1);
 --
 -- ##类轮播图
 CREATE TABLE dy_swipe(
