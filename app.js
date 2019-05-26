@@ -15,13 +15,29 @@ var server = express();
 server.listen(3000,()=>{
     console.log('suc server')
 });
+//配置cors
+// server.use(cors({
+    // "origin":[],
+    // ""
+// }))
+server.all('*',(req,res,next)=>{
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Credentials','true');
+    next();
+})
+// var allowCors = function(req, res, next) {
+//   res.header('Access-Control-Allow-Origin', req.headers.origin);
+//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type');
+//   res.header('Access-Control-Allow-Credentials','true');
+//   next();
+// };
+// server.use(allowCors);//使用跨域中间件
+//body-parser  config
 server.use(bodyParser.urlencoded({
     extended: true
-}))
-//配置cors
-server.use(cors({
-    origin: ['http://localhost:8080', 'http://127.0.0.1:8080','file:///D:/ApplicationWeb/demo/upload/public/uploadAxios.html'],
-  credentials:true
 }))
 //托管静态资源
 server.use( express.static('public') )
@@ -33,41 +49,32 @@ server.use('/kind', kindRouter)
 
 //websocket
 var wsServer = new ws.Server({port:3001});
+//定义一个广播数组
+var sockets = [];
 wsServer.on("connection",(socket)=>{
     console.log("ws:-服务器接收连接");
-    //服务器接收客户端数据
-    socket.on("message",(msg)=>{
-    	//webscoket只能接受字符串
-        var arr = msg.split(",")
-        var uid = arr[0];
-        var msg = arr[1];
-        var user_name = arr[2];
-        var user_img = arr[3];
-        var sql1 = 'INSERT INTO `dy_chat`(`cid`, `uid`, `msg`, `user_name`, `user_img`) VALUES(NULL,?,?,?,?)';
-        pool.query(sql1,[uid,msg,user_name,user_img],(err,result)=>{
-            if(err) throw err;
-            if(result.affectedRows>0){
-                var sql2 = 'SELECT * FROM dy_chat';
-                pool.query(sql2,(err,result)=>{
-                    if(err) throw err;
-                    var json = JSON.stringify({code:1,data:result})
-                    //返回给前端
-                    socket.send(json)
-                })
+    if(sockets.indexOf(socket)===-1){
+        // 每次进来的用户都添加进广播数组
+        sockets.push(socket);
+        console.log(sockets)
+        console.log("有"+sockets.length+"个客户端在线");
+        var num = sockets.length
+        if(!sockets) num = 0;
+        //服务器接收客户端数据
+        socket.on("message",(msg)=>{
+        	//webscoket只能接受字符串
+            var arr = msg.split(",")
+            //返回接受的数据,将数据转换为
+            var json = JSON.stringify({ uid: arr[0], msg: arr[1], user_name: arr[2], user_img: arr[3],user_num: num })
+            // 循环遍历广播给每一个用户
+            for(var c of sockets){
+                c.send(json)
             }
-        })
-        // return
-        // //返回接受的数据,将数据转换为
-        // var json = JSON.stringify({ uid: arr[0], msg: arr[1], user_name: arr[2], user_img: arr[3] })
-        // socket.send(json)
-    });
+        });
+    }
     //关闭ws服务器
-    socket.on("close",()=>{
-        var sql = 'DELETE FROM dy_chat'
-        pool.query(sql,(err,result)=>{
-            if(err) throw err;
-            console.log("客户端断开连接...");
-        })
-
+    socket.on("close",(eclose)=>{
+        sockets.pop(-1);
+        console.log("客户端断开连接...",eclose);
     })
 });
